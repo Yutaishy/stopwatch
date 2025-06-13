@@ -60,6 +60,18 @@
     - `npx --yes cloudflared@npm:cloudflared tunnel --url http://localhost:8000 --no-autoupdate`
 - ただし、これらのURLはコマンド実行中のみ有効
 
+### 恒久的な公開（GitHub Pages）
+1. GitHubで新しいリポジトリを作成（例: `stopwatch`）
+2. `index.html` をリポジトリにアップロード
+3. リポジトリの「Settings」→「Pages」へ移動
+4. 「Branch」→ `main`、`/（root）` を選択し「Save」
+5. 数分後、
+   - `https://ユーザー名.github.io/リポジトリ名/` で公開されます
+   - 例: `https://yutaishy.github.io/stopwatch/`
+6. このURLをNotion等の「Embed」ブロックに貼り付け
+
+※リポジトリが「Private（非公開）」の場合は「Public（公開）」に変更する必要があります。
+
 ---
 
 ## 注意事項
@@ -67,6 +79,7 @@
 - 一時公開URL（cloudflared等）はPCやターミナルを閉じると無効になります
 - 恒久的な公開にはNetlify DropやGitHub Pages等の利用を推奨
 - Notion埋め込み時、外部サービスのiframe制限により表示できない場合があります
+- GitHub Pagesはリポジトリが「Public（公開）」でないと利用できません
 
 ---
 
