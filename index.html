@@ -1,27 +1,37 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ストップウォッチ＆タイマー</title>
+    <title>Stopwatch & Timer</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto+Mono:wght@700&display=swap');
+
+        :root {
+            --bg: #000000;
+            --fg: #ffffff;
+            --accent: #ffffff; /* ホバー時の背景やボーダー用 */
+        }
+
         body {
             margin: 0;
             padding: 0;
-            background-color: #000000;
-            color: #FFFFFF;
-            font-family: 'Courier New', monospace;
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         #display {
-            font-size: 72px;
-            font-weight: bold;
+            font-size: 80px;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
             margin-bottom: 40px;
             letter-spacing: 2px;
         }
@@ -33,19 +43,20 @@
         }
 
         button {
-            background-color: #000000;
-            color: #FFFFFF;
-            border: 2px solid #FFFFFF;
-            padding: 15px 30px;
+            background-color: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            padding: 12px 28px;
             font-size: 18px;
-            font-family: 'Courier New', monospace;
+            font-family: inherit;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background-color 0.25s, color 0.25s, transform 0.15s;
         }
 
         button:hover {
-            background-color: #FFFFFF;
-            color: #000000;
+            background-color: var(--accent);
+            color: var(--bg);
         }
 
         button:active {
@@ -94,19 +105,19 @@
         }
 
         .timer-input input {
-            background-color: #000000;
-            color: #FFFFFF;
-            border: 2px solid #FFFFFF;
+            background-color: var(--bg);
+            color: var(--fg);
+            border: 2px solid var(--accent);
+            border-radius: 6px;
             padding: 10px;
             font-size: 18px;
-            font-family: 'Courier New', monospace;
-            width: 60px;
+            width: 70px;
             text-align: center;
         }
 
         .timer-input span {
             font-size: 18px;
-            margin: 0 5px;
+            margin: 0 8px;
         }
 
         .active {
@@ -116,14 +127,14 @@
 </head>
 <body>
     <div class="mode-switch">
-        <button id="modeSwitch">タイマーモードに切り替え</button>
+        <button id="modeSwitch">Switch to Timer Mode</button>
     </div>
 
     <div id="display">00:00:00</div>
     
     <div class="timer-input">
-        <input type="number" id="minutes" min="0" max="99" value="0">分
-        <input type="number" id="seconds" min="0" max="59" value="0">秒
+        <input type="number" id="minutes" min="0" max="99" value="0"><span>min</span>
+        <input type="number" id="seconds" min="0" max="59" value="0"><span>sec</span>
     </div>
 
     <div class="controls">
@@ -169,7 +180,7 @@
         function switchMode() {
             isTimerMode = !isTimerMode;
             reset();
-            modeSwitchBtn.textContent = isTimerMode ? 'ストップウォッチモードに切り替え' : 'タイマーモードに切り替え';
+            modeSwitchBtn.textContent = isTimerMode ? 'Switch to Stopwatch Mode' : 'Switch to Timer Mode';
             timerInput.style.display = isTimerMode ? 'block' : 'none';
             lapBtn.style.display = isTimerMode ? 'none' : 'block';
         }
@@ -185,7 +196,7 @@
                 if (elapsedTime <= 0) {
                     elapsedTime = 0;
                     stop();
-                    alert('タイマーが終了しました！');
+                    alert('Timer Completed!');
                 }
                 updateDisplay();
             }, 10);
