@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stopwatch</title>
+    <title>ストップウォッチ＆タイマー</title>
     <style>
         body {
             margin: 0;
@@ -83,11 +83,49 @@
         #lapList::-webkit-scrollbar-thumb {
             background: #FFFFFF;
         }
+
+        .mode-switch {
+            margin-bottom: 20px;
+        }
+
+        .timer-input {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .timer-input input {
+            background-color: #000000;
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            padding: 10px;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            width: 60px;
+            text-align: center;
+        }
+
+        .timer-input span {
+            font-size: 18px;
+            margin: 0 5px;
+        }
+
+        .active {
+            display: block !important;
+        }
     </style>
 </head>
 <body>
+    <div class="mode-switch">
+        <button id="modeSwitch">タイマーモードに切り替え</button>
+    </div>
+
     <div id="display">00:00:00</div>
     
+    <div class="timer-input">
+        <input type="number" id="minutes" min="0" max="99" value="0">分
+        <input type="number" id="seconds" min="0" max="59" value="0">秒
+    </div>
+
     <div class="controls">
         <button id="startStop">START</button>
         <button id="lap">LAP</button>
@@ -102,12 +140,18 @@
         let timerInterval = null;
         let isRunning = false;
         let lapCount = 0;
+        let isTimerMode = false;
+        let targetTime = 0;
 
         const display = document.getElementById('display');
         const startStopBtn = document.getElementById('startStop');
         const lapBtn = document.getElementById('lap');
         const resetBtn = document.getElementById('reset');
         const lapList = document.getElementById('lapList');
+        const modeSwitchBtn = document.getElementById('modeSwitch');
+        const timerInput = document.querySelector('.timer-input');
+        const minutesInput = document.getElementById('minutes');
+        const secondsInput = document.getElementById('seconds');
 
         function formatTime(milliseconds) {
             const totalSeconds = Math.floor(milliseconds / 1000);
@@ -122,14 +166,45 @@
             display.textContent = formatTime(elapsedTime);
         }
 
-        function start() {
+        function switchMode() {
+            isTimerMode = !isTimerMode;
+            reset();
+            modeSwitchBtn.textContent = isTimerMode ? 'ストップウォッチモードに切り替え' : 'タイマーモードに切り替え';
+            timerInput.style.display = isTimerMode ? 'block' : 'none';
+            lapBtn.style.display = isTimerMode ? 'none' : 'block';
+        }
+
+        function startTimer() {
+            const minutes = parseInt(minutesInput.value) || 0;
+            const seconds = parseInt(secondsInput.value) || 0;
+            targetTime = (minutes * 60 + seconds) * 1000;
+            elapsedTime = targetTime;
             startTime = Date.now() - elapsedTime;
             timerInterval = setInterval(function() {
-                elapsedTime = Date.now() - startTime;
+                elapsedTime = targetTime - (Date.now() - startTime);
+                if (elapsedTime <= 0) {
+                    elapsedTime = 0;
+                    stop();
+                    alert('タイマーが終了しました！');
+                }
                 updateDisplay();
             }, 10);
             isRunning = true;
             startStopBtn.textContent = 'STOP';
+        }
+
+        function start() {
+            if (isTimerMode) {
+                startTimer();
+            } else {
+                startTime = Date.now() - elapsedTime;
+                timerInterval = setInterval(function() {
+                    elapsedTime = Date.now() - startTime;
+                    updateDisplay();
+                }, 10);
+                isRunning = true;
+                startStopBtn.textContent = 'STOP';
+            }
         }
 
         function stop() {
@@ -168,6 +243,8 @@
 
         resetBtn.addEventListener('click', reset);
         lapBtn.addEventListener('click', lap);
+
+        modeSwitchBtn.addEventListener('click', switchMode);
 
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
